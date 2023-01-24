@@ -5,7 +5,6 @@ import PlanetsTable from './components/PlanetsTable';
 
 function App() {
   const [planets, setPlanets] = useState({});
-  const [planetsClone, setPlanetsClone] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [numberFilter, setNumberFilter] = useState({
     param1: 'population',
@@ -23,7 +22,6 @@ function App() {
           delete planet.residents;
         });
         setPlanets(results);
-        setPlanetsClone(results);
         setIsLoading(false);
       });
   }
@@ -50,15 +48,15 @@ function App() {
   async function handleClick() {
     const { param1, param2, param3 } = numberFilter;
     if (param2 === 'maior que') {
-      setPlanets(planetsClone.filter((planet) => (
+      setPlanets(planets.filter((planet) => (
         Number(planet[param1]) > Number(param3)
       )));
     } else if (param2 === 'menor que') {
-      setPlanets(planetsClone.filter((planet) => (
+      setPlanets(planets.filter((planet) => (
         Number(planet[param1]) < Number(param3)
       )));
     } else {
-      setPlanets(planetsClone.filter((planet) => (
+      setPlanets(planets.filter((planet) => (
         Number(planet[param1]) === Number(param3)
       )));
     }
