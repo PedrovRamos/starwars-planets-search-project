@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from '../App';
 import userEvent from '@testing-library/user-event';
+import testData from '../../cypress/mocks/testData'
 
 test('Testa se os inputs estão presentes na aplicação', () => {
   render(<App />);
@@ -52,4 +53,23 @@ test('Testa o botão de deletar perfil', async () => {
     userEvent.click(filterBtn);
     const deleteFilterBtn = screen.getByRole('button', {  name: /x/i})
     userEvent.click(deleteFilterBtn)
+    
 });
+
+test('Testa o fetch', async () => {
+
+  jest.spyOn(global, 'fetch');
+  global.fetch.mockResolvedValue({
+    json: jest.fn().mockResolvedValue(testData),
+  });
+
+  render(<App />)
+
+  const planetTatooine = await screen.findByText(/tatooine/i);
+
+  expect(planetTatooine).toBeInTheDocument();
+
+    
+});
+
+
