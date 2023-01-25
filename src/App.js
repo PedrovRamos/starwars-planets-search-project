@@ -11,6 +11,10 @@ function App() {
     param2: 'maior que',
     param3: 0,
   });
+  const [filters, setFilters] = useState([]);
+  const [options, setOptions] = useState([
+    'orbital_period', 'diameter',
+    'surface_water', 'rotation_period', 'population']);
 
   function getPlanets() {
     setIsLoading(true);
@@ -30,6 +34,41 @@ function App() {
     getPlanets();
   }, []);
 
+  useEffect(() => {
+    filters.forEach((filter) => {
+      setOptions((prevState) => prevState.filter((each) => each !== filter.column));
+    });
+    if (filters.length !== 0) {
+      fetch('https://swapi.dev/api/planets')
+        .then((response) => response.json())
+        .then((data) => {
+          const { results } = data;
+          results.forEach((planet) => {
+            delete planet.residents;
+          });
+          let planetsFilter = results;
+          filters.forEach(({ column, comparison, value }) => {
+            if (comparison === 'maior que') {
+              planetsFilter = planetsFilter.filter((planet) => (
+                Number(planet[column]) > Number(value)
+              ));
+            } else if (comparison === 'menor que') {
+              planetsFilter = planetsFilter.filter((planet) => (
+                Number(planet[column]) < Number(value)
+              ));
+            } else {
+              planetsFilter = planetsFilter.filter((planet) => (
+                Number(planet[column]) === Number(value)
+              ));
+            }
+          });
+          setPlanets(planetsFilter);
+        });
+    } else {
+      getPlanets();
+    }
+  }, [filters]);
+
   function handleChange({ target }) {
     const { value } = target;
     if (value !== '') {
@@ -47,19 +86,25 @@ function App() {
 
   async function handleClick() {
     const { param1, param2, param3 } = numberFilter;
-    if (param2 === 'maior que') {
-      setPlanets(planets.filter((planet) => (
-        Number(planet[param1]) > Number(param3)
-      )));
-    } else if (param2 === 'menor que') {
-      setPlanets(planets.filter((planet) => (
-        Number(planet[param1]) < Number(param3)
-      )));
-    } else {
-      setPlanets(planets.filter((planet) => (
-        Number(planet[param1]) === Number(param3)
-      )));
-    }
+    setFilters((prevState) => ([...prevState, {
+      column: param1,
+      comparison: param2,
+      value: param3,
+    }]));
+  }
+
+  function handleDeleteClick({ target }) {
+    const { value } = target;
+    setFilters((prevState) => prevState.filter((each) => each.column !== value));
+    setOptions((prevState) => ([...prevState, value]));
+  }
+
+  function handleResetClick() {
+    setFilters([]);
+    setOptions(['population',
+      'orbital_period', 'diameter', 'rotation_period',
+      'surface_water']);
+    getPlanets();
   }
 
   return (
@@ -75,11 +120,9 @@ function App() {
             data-testid="column-filter"
             id="param1-select"
           >
-            <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
+            { options.map((option, i) => (
+              <option name="param1" key={ i } value={ option }>{option}</option>
+            )) }
           </select>
         </label>
         <label htmlFor="param2-select">
@@ -115,6 +158,28 @@ function App() {
           FILTRAR
         </button>
       </form>
+      { filters.map(({ column, comparison, value }, i) => (
+        <div data-testid="filter" key={ i }>
+          <p>
+
+            {`${column} ${comparison} ${value}`}
+          </p>
+          <button
+            onClick={ handleDeleteClick }
+            value={ column }
+            type="button"
+          >
+            x
+          </button>
+        </div>
+      )) }
+      <button
+        onClick={ handleResetClick }
+        data-testid="button-remove-filters"
+        type="button"
+      >
+        RESETAR FILTRO
+      </button>
       { isLoading && <h1>Carregando...</h1> }
       <PlanetsTable />
     </PlanetsContext.Provider>
