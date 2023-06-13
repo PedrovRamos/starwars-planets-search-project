@@ -6,3 +6,13 @@ Nesse projeto, minha tarefa foi desenvolver uma lista de filtros de planetas bas
 Através da Context API, pude criar um contexto global que armazenava as informações relevantes sobre os planetas. Isso permitiu que eu compartilhasse esses dados entre vários componentes da interface, facilitando o acesso e a manipulação dessas informações.
 
 Além disso, utilizei os Hooks, como o useState e o useEffect, para controlar os estados dos filtros. Com o useState, criei variáveis de estado que eram atualizadas conforme os filtros eram aplicados ou removidos. Já o useEffect me permitiu observar e reagir às mudanças nesses estados, garantindo que a lista de planetas fosse atualizada de forma dinâmica.
+
+Para realizar esse projeto, usei as tecnologias:
+
+<ul>
+  <li>Context API</li>
+  <li>React Hooks</li>
+  <li>React</li>
+  <li>React Testing Library</li>
+  <li>JavaScript</li>
+</ul>
