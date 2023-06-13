@@ -1,4 +1,4 @@
-<h1>starwars-planets-search-project</h1>
+<h1>Starwars Planets Search Project</h1>
 
 
 Nesse projeto, minha tarefa foi desenvolver uma lista de filtros de planetas baseados no universo de Star Wars. Para isso, utilizei a Context API e os Hooks para controlar os estados globais da aplicação.
